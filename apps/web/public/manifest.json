@@ -1,0 +1,16 @@
+{
+  "name": "Spice Route Restaurant",
+  "short_name": "SpiceRoute",
+  "description": "Order food directly from us!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff7ed",
+  "theme_color": "#ff5200",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1046/1046784.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

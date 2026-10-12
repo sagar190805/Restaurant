@@ -1,0 +1,366 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  name      String?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  addresses         Address[]
+  orders            Order[]
+  reviews           Review[]
+  favorites         Favorite[]
+  loyaltyLedgers    LoyaltyLedger[]
+  chatSessions      ChatSession[]
+  couponRedemptions CouponRedemption[]
+}
+
+model Otp {
+  id        String   @id @default(uuid())
+  phone     String
+  otp       String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model StaffUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   // OWNER, MANAGER, KITCHEN, RIDER
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  auditLogs AuditLog[]
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String   // Home, Work, Other
+  line1     String
+  line2     String?
+  city      String
+  state     String
+  pincode   String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order[]
+}
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  sortOrder   Int        @default(0)
+  items       MenuItem[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model MenuItem {
+  id           String    @id @default(uuid())
+  categoryId   String
+  category     Category  @relation(fields: [categoryId], references: [id])
+  name         String
+  description  String?
+  price        Int       // in paise
+  image        String?
+  isVeg        Boolean   @default(true)
+  spiceLevel   Int       @default(0) // 0-3
+  isBestseller Boolean   @default(false)
+  isAvailable  Boolean   @default(true)
+  variants     Variant[]
+  addons       Addon[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  favorites    Favorite[]
+}
+
+model Variant {
+  id         String   @id @default(uuid())
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  name       String   // e.g. Half, Full
+  price      Int      // in paise
+  CartItem   CartItem[]
+  OrderItem  OrderItem[]
+}
+
+model Addon {
+  id         String   @id @default(uuid())
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  name       String
+  price      Int      // in paise
+  CartItem   CartItem[]
+  OrderItem  OrderItem[]
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  items     CartItem[]
+  couponId  String?
+  coupon    Coupon?    @relation(fields: [couponId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id           String   @id @default(uuid())
+  cartId       String
+  cart         Cart     @relation(fields: [cartId], references: [id])
+  menuItemId   String
+  variantId    String?
+  variant      Variant? @relation(fields: [variantId], references: [id])
+  addonId      String?
+  addon        Addon?   @relation(fields: [addonId], references: [id])
+  quantity     Int
+  instructions String?
+}
+
+model Order {
+  id             String           @id @default(uuid())
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+  addressId      String?
+  address        Address?         @relation(fields: [addressId], references: [id])
+  status         String           // CREATED, PAYMENT_PENDING, PLACED, ACCEPTED, PREPARING, READY, OUT_FOR_DELIVERY, DELIVERED, CANCELLED, REJECTED, REFUNDED, PAYMENT_FAILED
+  type           String           // Delivery, Takeaway, Dine-in
+  tableNo        String?
+  subtotal       Int
+  gst            Int
+  deliveryFee    Int
+  packingCharge  Int
+  discount       Int
+  total          Int
+  paymentMethod  String           // ONLINE, COD
+  paymentStatus  String           // PENDING, PAID, REFUNDED
+  razorpayOrderId String?
+  items          OrderItem[]
+  statusLogs     OrderStatusLog[]
+  payment        Payment?
+  refund         Refund?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  Review         Review[]
+  DeliveryTracking DeliveryTracking[]
+  riderId        String?
+  rider          Rider?           @relation(fields: [riderId], references: [id])
+}
+
+model OrderItem {
+  id           String   @id @default(uuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id])
+  menuItemId   String
+  name         String
+  price        Int
+  quantity     Int
+  variantId    String?
+  variant      Variant? @relation(fields: [variantId], references: [id])
+  addonId      String?
+  addon        Addon?   @relation(fields: [addonId], references: [id])
+  instructions String?
+}
+
+model OrderStatusLog {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  status    String
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id])
+  razorpayPaymentId String
+  razorpaySignature String
+  amount          Int
+  status          String
+  createdAt       DateTime @default(now())
+}
+
+model Refund {
+  id              String   @id @default(uuid())
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id])
+  razorpayRefundId String
+  amount          Int
+  reason          String?
+  createdAt       DateTime @default(now())
+}
+
+model WebhookEvent {
+  id        String   @id @default(uuid())
+  eventId   String   @unique
+  type      String
+  payload   String
+  processed Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Coupon {
+  id               String   @id @default(uuid())
+  code             String   @unique
+  type             String   // PERCENT, FLAT
+  value            Int
+  minCartValue     Int      @default(0)
+  maxDiscount      Int?
+  isFirstOrderOnly Boolean  @default(false)
+  perUserLimit     Int?
+  validFrom        DateTime
+  validTo          DateTime
+  isActive         Boolean  @default(true)
+  Cart             Cart[]
+  redemptions      CouponRedemption[]
+}
+
+model CouponRedemption {
+  id        String   @id @default(uuid())
+  couponId  String
+  coupon    Coupon   @relation(fields: [couponId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  orderId   String
+  createdAt DateTime @default(now())
+}
+
+model Rider {
+  id            String   @id @default(uuid())
+  name          String
+  phone         String   @unique
+  isActive      Boolean  @default(true)
+  currentLat    Float?
+  currentLng    Float?
+  lastLocationAt DateTime?
+  orders        Order[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model DeliveryTracking {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  rating     Int      // 1-5
+  comment    String?
+  reply      String?
+  isHidden   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model LoyaltyLedger {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  points    Int
+  type      String   // EARN, REDEEM
+  orderId   String?
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id               String   @id @default(uuid())
+  isOpen           Boolean  @default(true) // Acts as manual override if true
+  openTime         String   @default("09:00") // HH:MM
+  closeTime        String   @default("23:00") // HH:MM
+  busyModeExtraMin Int      @default(0)
+  deliveryRadiusKm Float    @default(5.0)
+  baseDeliveryFee  Int      @default(0)
+  perKmFee         Int      @default(1000) // 10 rs
+  freeDeliveryOver Int?
+  minOrderValue    Int      @default(0)
+  packingCharge    Int      @default(0)
+  gstPercentage    Float    @default(5.0)
+  codEnabled       Boolean  @default(true)
+  codLimit         Int      @default(100000) // 1000 rs
+  tableCount       Int      @default(10)
+  fssaiNumber      String?
+  gstNumber        String?
+  restaurantName   String   @default("Spice Route")
+  updatedAt        DateTime @updatedAt
+}
+
+model DeliveryZone {
+  id        String   @id @default(uuid())
+  polygon   String   // JSON string of lat/lng array
+  isActive  Boolean  @default(true)
+}
+
+model ChatSession {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  guestId   String?
+  status    String   // BOT, HUMAN_HANDOFF, CLOSED
+  messages  ChatMessage[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id            String      @id @default(uuid())
+  chatSessionId String
+  chatSession   ChatSession @relation(fields: [chatSessionId], references: [id])
+  sender        String      // USER, BOT, ADMIN
+  content       String
+  createdAt     DateTime    @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String?
+  role      String?  // to target STAFF
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id          String     @id @default(uuid())
+  staffUserId String
+  staffUser   StaffUser  @relation(fields: [staffUserId], references: [id])
+  action      String
+  details     String
+  createdAt   DateTime   @default(now())
+}

@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Zomato Glass Theme (Default) */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 11%;
+    --primary: 350 78% 53%; /* Zomato Crimson Red #E23744 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 40%;
+    --accent: 142 71% 45%; /* Green for veg */
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 11%;
+    --border: 0 0% 90%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --radius: 1rem;
+  }
+
+  [data-theme="saffron"] {
+    --background: 30 50% 98%;
+    --foreground: 20 14% 10%;
+    --primary: 24 95% 53%; /* Saffron/Orange */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 35 100% 90%;
+    --secondary-foreground: 24 95% 40%;
+    --accent: 142 71% 45%;
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14% 10%;
+    --border: 20 14% 90%;
+    --muted: 20 14% 96%;
+    --muted-foreground: 20 14% 40%;
+  }
+
+  [data-theme="midnight"] {
+    --background: 220 40% 10%;
+    --foreground: 220 10% 95%;
+    --primary: 45 93% 47%; /* Gold */
+    --primary-foreground: 220 40% 10%;
+    --secondary: 220 20% 20%;
+    --secondary-foreground: 220 10% 95%;
+    --accent: 142 71% 45%;
+    --accent-foreground: 0 0% 100%;
+    --card: 220 30% 14%;
+    --card-foreground: 220 10% 95%;
+    --border: 220 20% 25%;
+    --muted: 220 20% 15%;
+    --muted-foreground: 220 10% 60%;
+  }
+
+  [data-theme="fresh-green"] {
+    --background: 140 30% 98%;
+    --foreground: 140 40% 10%;
+    --primary: 142 71% 45%; /* Fresh Green */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 140 40% 90%;
+    --secondary-foreground: 142 71% 30%;
+    --accent: 35 100% 50%; /* Orange accent */
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 140 40% 10%;
+    --border: 140 20% 90%;
+    --muted: 140 20% 96%;
+    --muted-foreground: 140 20% 40%;
+  }
+
+  [data-theme="royal-maroon"] {
+    --background: 0 20% 99%;
+    --foreground: 350 40% 10%;
+    --primary: 350 65% 40%; /* Royal Maroon */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 350 20% 90%;
+    --secondary-foreground: 350 65% 30%;
+    --accent: 45 93% 47%; /* Gold accent */
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 350 40% 10%;
+    --border: 350 20% 90%;
+    --muted: 350 20% 96%;
+    --muted-foreground: 350 20% 40%;
+  }
+
+  [data-theme="ocean-breeze"] {
+    --background: 210 40% 98%;
+    --foreground: 210 30% 15%;
+    --primary: 200 90% 40%; /* Ocean Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 190 80% 85%;
+    --secondary-foreground: 200 90% 30%;
+    --accent: 45 90% 50%; /* Sandy Gold */
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 30% 15%;
+    --border: 210 20% 90%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 210 20% 45%;
+  }
+
+  [data-theme="spicy-red"] {
+    --background: 0 20% 99%;
+    --foreground: 0 20% 10%;
+    --primary: 0 85% 55%; /* Chili Red */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 20% 90%;
+    --secondary-foreground: 0 85% 40%;
+    --accent: 45 95% 50%; /* Yellow */
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 20% 10%;
+    --border: 0 10% 90%;
+    --muted: 0 10% 96%;
+    --muted-foreground: 0 10% 40%;
+  }
+
+  [data-theme="pastel-pop"] {
+    --background: 330 30% 99%;
+    --foreground: 330 30% 15%;
+    --primary: 330 70% 65%; /* Soft Pink */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 150 50% 85%; /* Mint */
+    --secondary-foreground: 150 50% 30%;
+    --accent: 45 90% 60%; /* Warm Yellow */
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 330 30% 15%;
+    --border: 330 20% 90%;
+    --muted: 330 20% 96%;
+    --muted-foreground: 330 20% 50%;
+  }
+
+  [data-theme="monochrome"] {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+    --primary: 0 0% 15%; /* Black/Dark Grey */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 0 0% 30%;
+    --accent: 0 0% 50%; 
+    --accent-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --border: 0 0% 85%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 40%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/20 selection:text-primary transition-colors duration-300;
+    /* Add a subtle mesh gradient background so glass effects pop */
+    background-image: 
+      radial-gradient(at 0% 0%, hsl(var(--primary) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsl(var(--secondary) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsl(var(--primary) / 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--secondary) / 0.15) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-background/60 backdrop-blur-md border-b border-white/20 dark:border-white/10;
+  }
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] shadow-primary/5;
+  }
+  .glass-input {
+    @apply bg-background/40 backdrop-blur-sm border-white/30 dark:border-white/10 focus:bg-background/80 transition-all;
+  }
+}
